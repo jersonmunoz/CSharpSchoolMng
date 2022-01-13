@@ -11,6 +11,9 @@ namespace SchoolManagement
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/jquery-ui").Include(
+                        "~/Scripts/jquery-ui-{version}.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 
@@ -25,6 +28,10 @@ namespace SchoolManagement
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new StyleBundle("~/Content/jquery-styles").Include(
+                      "~/Content/themes/base/all.css",
+                      "~/Content/themes/base/autocomplete.css"));
         }
     }
 }

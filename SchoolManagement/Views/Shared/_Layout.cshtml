@@ -1,11 +1,12 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - School Management System</title>
     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/jquery-styles")
     @Scripts.Render("~/bundles/modernizr")
 
 </head>
@@ -25,10 +26,11 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("Acerca de", "About", "Home")</li>
                     <li>@Html.ActionLink("Contacto", "Contact", "Home")</li>
-                    <li>@Html.ActionLink("Test View", "TestView", "Home")</li>
+                    @*<li>@Html.ActionLink("Test View", "TestView", "Home")</li>*@
                     <li>@Html.ActionLink("Courses","Index","Courses")</li>
                     <li>@Html.ActionLink("Students","Index","Students")</li>
                     <li>@Html.ActionLink("Lecturers","Index","Lecturers")</li>
+                    <li>@Html.ActionLink("Enrollments","Index","Enrollments")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -43,6 +45,7 @@
     </div>
 
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquery-ui")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>
