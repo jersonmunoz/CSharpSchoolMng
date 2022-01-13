@@ -65,6 +65,26 @@ namespace SchoolManagement.Controllers
             ViewBag.LecturerId = new SelectList(db.Lecturers, "LecturerId", "FirstName", enrollment.LecturerId);
             return View(enrollment);
         }
+        [HttpPost]
+        public async Task<JsonResult> AddStudent([Bind(Include = "CourseId,StudentId")] Enrollment enrollment)
+        {
+            try
+            {
+                var isEnrolled = db.Enrollment.Any(q => q.CourseId == enrollment.CourseId && q.StudentId == enrollment.StudentId);
+                if (ModelState.IsValid && !isEnrolled)
+                {
+                    db.Enrollment.Add(enrollment);
+                    await db.SaveChangesAsync();
+                    return Json(new { IsSuccess = true, Message = "Student Added Successfully" }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new { IsSuccess = false, Message = "Student Is Already Enrolled" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                return Json(new { IsSuccess = false, Message = "Please contact your administrator" }, JsonRequestBehavior.AllowGet);
+
+            }
+        }
 
         // GET: Enrollments/Edit/5
         public async Task<ActionResult> Edit(int? id)
@@ -136,6 +156,12 @@ namespace SchoolManagement.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+        [HttpPost]
+        public JsonResult GetStudents(string term)
+        {
+            var student = db.Student.Select(q => new { Name = q.FirstName + " " + q.LastName, Id = q.StudentId }).Where(q=>q.Name.Contains(term));
+            return Json(student,JsonRequestBehavior.AllowGet);
         }
     }
 }

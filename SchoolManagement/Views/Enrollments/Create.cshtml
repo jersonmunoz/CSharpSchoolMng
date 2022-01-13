@@ -4,10 +4,55 @@
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<script>
+    $(function () {
+        $("#Student_FirstName").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: "/Enrollments/GetStudents",
+                    dataType: "json",
+                    type:"POST",
+                    data: {
+                        term: request.term
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.Name, value: item.Name, id: item.Id };
+                        }))
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (event, data) {
+                $("#StudentId").val(data.item.id);
+            }
+        });
+    });
+    function Added(res) {
+        console.log(res);
+        if (res.IsSuccess) {
+            $(function () {
+                $("#failure_message").hide();
+                $("#success_message").text(res.Message);
+                $("#success_message").fadeIn("fast");
+            });
+        }
+        else {
+            $("#success_message").hide();
+            $("#success_message").text(res.Message);
+            $("#failure_message").fadeIn("fast");
+        }
+    }
 
+</script>
 <h2>Create</h2>
 
-@using (Html.BeginForm()) 
+@using (Ajax.BeginForm("AddStudent", "Enrollments", new AjaxOptions
+    {
+        HttpMethod = "POST",
+        OnSuccess = "Added",
+        OnFailure="Failed"
+})) 
 {
     @Html.AntiForgeryToken()
     
@@ -15,14 +60,12 @@
         <h4>Enrollment</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Grade, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Grade, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Grade, "", new { @class = "text-danger" })
-            </div>
+        <div id="failure_message" class="alert alert-danger" style="display:none">
+            Error ocurred at adding the student
         </div>
-
+        <div id="success_message" class="alert alert-success" style="display:none">
+            The student has been added succesfully
+        </div>
         <div class="form-group">
             @Html.LabelFor(model => model.CourseId, "CourseId", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -34,18 +77,13 @@
         <div class="form-group">
             @Html.LabelFor(model => model.StudentId, "StudentId", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("StudentId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.EditorFor(model => model.Student.FirstName, new { htmlAttributes = new { @class = "form-control" } })  
+                @Html.HiddenFor(model => model.StudentId)
                 @Html.ValidationMessageFor(model => model.StudentId, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.LecturerId, "LecturerId", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("LecturerId", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.LecturerId, "", new { @class = "text-danger" })
-            </div>
-        </div>
+     
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
